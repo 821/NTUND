@@ -1,0 +1,192 @@
+\ProvidesFile{nd.bbx}
+\input{nd.def}
+
+% 懸掛縮進
+\defbibenvironment{bibliography}
+  {\list
+     {}
+     {\setlength{\leftmargin}{\bibhang}%
+      \setlength{\itemindent}{-\leftmargin}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}}}
+  {\endlist}
+  {\item}
+
+\RequireBibliographyStyle{standard}
+
+\DeclareFieldFormat[article,thesis,inbook,inancient,inproceedings,online,unpublished,news,newspaper,simple]{title}{\cearticle{#1}}
+\DeclareFieldFormat[incollection,book,misc,ancient]{title}{\cebook{#1}}
+\DeclareFieldFormat{journaltitle}{\cebook{#1}}
+\DeclareFieldFormat*{year}{\cebracket{#1}}
+\DeclareFieldFormat*{pages}{\cegen{頁}{pp.}{#1}}
+\DeclareFieldFormat*{booktitle}{\cebook{#1}}
+\DeclareNameAlias{sortname}{last-first}
+% \DeclareFieldFormat{titlecase}{\MakeUpperCase{#1}}
+\DeclareNameFormat*{author}{%
+  \ifgiveninits
+    {\usebibmacro{name:family-given}
+      {\namepartfamily}
+      {\namepartgiveni}
+      {\namepartprefix}
+      {\namepartsuffix}}
+    {\usebibmacro{name:family-given}
+      {\namepartfamily}
+      {\namepartgiven}
+      {\namepartprefix}
+      {\namepartsuffix}}%
+  \usebibmacro{name:andothers}}
+
+
+\newbibmacro*{publisher+location}{%
+  \printlist{location}%
+  \cecolon%
+  \printlist{publisher}}
+
+\renewbibmacro*{urldate}{%
+  \printfield{urlyear}/%
+  \printfield{urlmonth}/%
+  \printfield{urlday}%
+  }
+
+\newbibmacro*{volume+number}{%
+  \iffieldundef{volume}{}{%
+    \printfield{volume}}%
+  \iffieldundef{number}{}{%
+    (\printfield{number}})%
+  }
+
+\newbibmacro*{trans+author}{%
+  \ifnameundef{translator}{\printnames{author}}%
+  {\printnames{translator}（譯），\printnames{author}（原著）}%
+  }%
+
+\DeclareBibliographyDriver{article}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{trans+author}%
+  \cegen{}{\addspace}%
+  \printfield{year}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \printfield{title}%
+  \setunit{\cecomma}%
+  \printfield{journaltitle}%
+  \cegen{}{\addspace}%
+  \setunit*{}%
+  \usebibmacro{volume+number}%
+  \addcolon\addspace%
+  \printfield{pages}%
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}%
+
+\DeclareBibliographyDriver{book}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{trans+author}%
+  \cegen{}{\addspace}%
+  \printfield{year}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{maintitle+title}%
+  \newunit%
+  \printfield{volumes}%
+  \usebibmacro{publisher+location}%
+  \newunit\newblock%
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}%
+
+\DeclareBibliographyDriver{inbook}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{trans+author}%
+  \cegen{}{\addspace}%
+  \printfield{year}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{maintitle+title}%
+  \setunit{\cecomma}%
+  \ifnameundef{editor}{\printnames{author}}{%
+    \printnames{editor}%
+  }%
+  \cegen{（編），}{ (ed.), }%
+  \usebibmacro{maintitle+booktitle}%
+  \setunit{\cecomma}\printfield{pages}%
+  \newunit\newblock%
+  \usebibmacro{publisher+location}%
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}%
+
+\DeclareBibliographyDriver{thesis}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{trans+author}%
+  \cegen{}{\addspace}%
+  \printfield{year}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{maintitle+title}%
+  \newunit%
+  \cegen{}{\printfield{type}\addcomma\addspace}%
+  \printlist{location}%
+  \cecolon%
+  \printlist{institution}%
+  \cegen{\ccomma\printfield{type}}{}%
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}
+
+\DeclareFieldFormat{url}{\url{#1}}
+\DeclareBibliographyDriver{online}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{trans+author}%
+  \cegen{}{\addspace}%
+  \printfield{year}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{maintitle+title}%
+  \newunit%
+  \printfield{url}%
+  \newunit\newblock%
+  \cegen{\usebibmacro{urldate} 檢索}{Retrieval Date \usebibmacro{urldate}}
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}%
+
+
+\DeclareBibliographyDriver{news}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{trans+author}%
+  \cegen{}{\addspace}%
+  \printfield{year}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{maintitle+title}%
+  \setunit{\cecomma}\newblock%
+  \usebibmacro{maintitle+booktitle}%
+  \newunit\newblock%
+  \usebibmacro{publisher+location}%
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}%
+
+\DeclareFieldFormat[newspaper]{pages}{{#1}}
+\DeclareBibliographyDriver{newspaper}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{trans+author}%
+  \cegen{}{\addspace}%
+  \printfield{year}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \printfield{title}%
+  \setunit{\cecomma}%
+  \printfield{journaltitle}%
+  \cegen{}{\addspace}%
+  \setunit*{}%
+  \cegen{\printfield{pages}版}{pp. \printfield{pages}}%
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}%
+
+\DeclareBibliographyDriver{simple}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{trans+author}%
+  \cegen{}{\addspace}%
+  \printfield{year}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \printfield{title}%
+  \ifnameundef{journal}{\setunit{\cecomma}\printfield{journaltitle}}{}%
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}%

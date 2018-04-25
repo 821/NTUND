@@ -1,0 +1,56 @@
+\ProvidesFile{nd.cbx}
+
+\newbibmacro{authors}{%
+  \ifnameundef{translator}{\printnames{labelname}}%
+  {\printnames[default]{translator}〔譯〕}%
+  }
+
+\newbibmacro{citea}{%
+  \ifnameundef{translator}{\printnames{labelname}}%
+  {\printnames[default]{translator}（譯）}%
+  }
+
+% 根據文獻輸出作者、全半形逗號、年份，也就是：作者，年份和作者, 年份
+\DeclareCiteCommand{\citeay}
+  {}
+  {\usebibmacro{authors}\cecomma\printfield[bibhyperref]{year}}
+  {\multicitedelim}
+  {}
+
+% 根據文獻輸出帶括號的年份，不過英文文獻如果用了中文名就會錯了，這時候還是用\citeyear比較好
+\DeclareCiteCommand{\ycite}
+  {\cegen{}{\addspace}\celbracket}
+  {\printfield[bibhyperref]{year}}
+  {\multicitedelim}
+  {\cerbracket}
+
+% 僅年份
+\DeclareCiteCommand{\citeyear}
+  {}
+  {\printfield[bibhyperref]{year}}
+  {\multicitedelim}
+  {}
+
+% 僅作者
+\DeclareCiteCommand{\citeauthor}
+  {}
+  {\usebibmacro{authors}}
+  {\multicitedelim}
+  {}
+
+% 不在括號內的譯者使用圓括號（囉嗦）
+\DeclareCiteCommand{\citea}
+  {}
+  {\usebibmacro{citea}}
+  {\multicitedelim}
+  {}
+
+\DeclareCiteCommand{\ayp}
+  {}
+  {\usebibmacro{authors}\cecomma\printfield[bibhyperref]{year}\cecolon}
+  {\multicitedelim}
+  {}
+
+\renewcommand{\cite}[1]{（\citeay{#1}）} % （作者，年份）和（作者, 年份）
+\newcommand{\pcite}[2]{（\ayp{#1}{#2}）} % （作者，年份：頁碼）和（作者, 年份: 頁碼）
+\newcommand{\citep}[2]{\ayp{#1}{#2}} % 作者，年份：頁碼和作者, 年份: 頁碼
